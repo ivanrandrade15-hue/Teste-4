@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Dev Turma - Moderno</title>
+    
+    <!-- CSS (O Estilo do Site) -->
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #c9d1d9;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --error: #f85149;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container { width: 100%; max-width: 500px; padding: 20px; transition: 0.3s; }
+        .hidden { display: none !important; }
+
+        /* Estilo dos Cards */
+        .card {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        h2 { margin-bottom: 0.5rem; color: #fff; }
+        p { color: #8b949e; margin-bottom: 1.5rem; }
+
+        /* Inputs e Botões */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        button:hover { background: var(--accent-hover); }
+
+        /* Painel do Projeto */
+        #painel-container { max-width: 800px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        
+        .card-painel {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .btn-github {
+            display: inline-block;
+            background: #21262d;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .btn-sair { background: transparent; color: var(--error); border: 1px solid var(--error); width: auto; padding: 5px 15px; }
+
+        .msg-erro { color: var(--error); font-size: 14px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-container" class="container">
+        <div class="card">
+            <h2>🚀 DevClass Login</h2>
+            <p>Acesse o painel de desenvolvimento</p>
+            <input type="text" id="user" placeholder="Usuário (tente: admin)">
+            <input type="password" id="pass" placeholder="Senha (tente: 123)">
+            <button onclick="fazerLogin()">Entrar no Sistema</button>
+            <p id="erro" class="msg-erro"></p>
+        </div>
+    </div>
+
+    <!-- PAINEL INTERATIVO -->
+    <div id="painel-container" class="container hidden">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0;">Dashboard da Turma</h2>
+                <button onclick="logout()" class="btn-sair">Sair</button>
+            </div>
+            
+            <div class="grid">
+                <div class="card-painel">
+                    <h3>📁 Projeto</h3>
+                    <p>Status: <span style="color: #3fb950;">Ativo</span></p>
+                    <a href="https://github.com" target="_blank" class="btn-github">GitHub Repo</a>
+                </div>
+                <div class="card-painel">
+                    <h3>👥 Membros</h3>
+                    <p>Turma: Desenvolvimento de Sistemas</p>
+                </div>
+            </div>
+
+            <div class="card-painel" style="margin-top: 20px;">
+                <h3>💬 Mural de Ideias</h3>
+                <div id="mural" style="max-height: 150px; overflow-y: auto; text-align: left; margin-bottom: 15px;">
+                    <p style="font-size: 14px; border-bottom: 1px solid #30363d; padding: 5px;">📍 Bem-vindo ao projeto!</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="nova-ideia" placeholder="Nova sugestão..." style="margin: 0;">
+                    <button onclick="adicionarIdeia()" style="width: auto; margin: 0;">Postar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT (A Lógica) -->
+    <script>
+        function fazerLogin() {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            // Simulação de login
+            if (user.toLowerCase() === "admin" && pass === "123") {
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('painel-container').classList.remove('hidden');
+            } else {
+                document.getElementById('erro').innerText = "Dados inválidos! Use admin / 123";
+            }
+        }
+
+        function adicionarIdeia() {
+            const input = document.getElementById('nova-ideia');
+            const mural = document.getElementById('mural');
+
+            if (input.value.trim() !== "") {
+                const p = document.createElement('p');
+                p.style.fontSize = "14px";
+                p.style.borderBottom = "1px solid #30363d";
+                p.style.padding = "5px 0";
+                p.innerHTML = `💡 ${input.value}`;
+                mural.appendChild(p);
+                input.value = "";
+                mural.scrollTop = mural.scrollHeight;
+            }
+        }
+
+        function logout() {
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
